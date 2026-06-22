@@ -84,11 +84,11 @@ Baseline was evaluated on the same test split as the fine-tuned model and used t
 
 |       Model           | Accuracy|
 |-----------------------|---------|
-| Fine-tuned DistilBERT | *0.917* |
-| Zero-shot baseline    | *0.630* |
+| Fine-tuned DistilBERT | 0.917 |
+| Zero-shot baseline    | 0.630 |
 
 
-Improvement = Fine-tuned accuracy − Baseline accuracy=0.917-0.630=*0.287*
+Improvement = Fine-tuned accuracy − Baseline accuracy=0.917-0.630=0.287
 
 
 ## 6. Confusion Matrix (Fine-tuned Model)
@@ -110,15 +110,15 @@ The confusion matrix shows:
 
 ### Fine-tuned Model
 
-                    precision    recall  f1-score   support
+| True \ Pred      | precision        | recall           | f1-score |support |
+|------------------|------------------|------------------|----------|--------|
+| surface_reaction | 0.95             | 1.00             | 0.97     |36      |
+| opinion_reasoned | 1.00             | 0.75             | 0.86     |36      |
+| analysis         | 0.84             | 1.00             | 0.91     |36      |
 
-surface_reaction       0.95      1.00      0.97        36
-opinion_reasoned       1.00      0.75      0.86        36
-        analysis       0.84      1.00      0.91        36
-
-        accuracy                           0.92       108
-       macro avg       0.93      0.92      0.91       108
-    weighted avg       0.93      0.92      0.91       108
+   accuracy                                                 0.92      108
+  macro avg          0.93                0.92               0.91      108
+ weighted avg        0.93                0.92               0.91      108
 
 
 **Precision**
@@ -144,78 +144,102 @@ F1=2*(Precision.Recall)/Precision+Recall
 
 Useful when you want a single balanced metric.
 
-*Class-wise interpretation*
+**Class-wise interpretation**
 
 **surface_reaction**
 Precision: 0.95
+
 Recall: 1.00
+
 F1: 0.97
 
 Interpretation:
 
-Model caught all surface_reaction cases (perfect recall)
-Very few false positives
-This is your strongest class
+Model caught all surface_reaction cases (perfect recall).
+
+Very few false positives.
+
+This is your strongest class.
+
 
 **opinion_reasoned**
+
 Precision: 1.00 (perfect)
+
 Recall: 0.75 (weakest recall)
 
 Interpretation:
 
-When model predicts this class → it's always correct
-BUT it misses 25% of actual cases
+When model predicts this class → it's always correct.
+
+BUT it misses 25% of actual cases.
 
 So:
 
-Model is conservative
+Model is conservative.
+
 It under-predicts this class
 
 It only predicts “opinion_reasoned” when it is very confident, otherwise it labels something else.
 
 **analysis**
+
 Precision: 0.84
+
 Recall: 1.00
 
 Interpretation:
 
-It catches all real “analysis” cases (perfect recall)
-But mislabels some other classes as “analysis” (lower precision)
+It catches all real “analysis” cases (perfect recall).
+
+But mislabels some other classes as “analysis” (lower precision).
 
 So:
 
-Model is over-predicting analysis
+Model is over-predicting analysis.
+
 Some false positives exist
 
-*Macro Average vs Weighted Average*
+**Macro Average vs Weighted Average**
 
 Macro Average
+
 Simple average of all classes
+
 Treats all classes equally
+
 precision = 0.93
+
 recall    = 0.92
+
 f1-score  = 0.91
 
 👉 Good indicator when classes are balanced (like yours)
 
 📌 Weighted Average
+
 Weighted by support (number of samples per class)
+
 precision = 0.93
+
 recall    = 0.92
+
 f1-score  = 0.91
 
 Since the dataset is balanced, macro ≈ weighted.
 
 ### Baseline Model
-                  precision    recall  f1-score   support
 
-surface_reaction       1.00      0.56      0.71        36
-opinion_reasoned       0.46      0.58      0.51        36
-        analysis       0.64      0.75      0.69        36
+| True \ Pred      | precision        | recall           | f1-score |support |
+|------------------|------------------|------------------|----------|--------|
+| surface_reaction | 1.00             | 0.56             | 0.71     |36      |
+| opinion_reasoned | 0.46             | 0.58             | 0.51     |36      |
+| analysis         | 0.64             | 0.75             | 0.69     |36      |
 
-        accuracy                           0.63       108
-       macro avg       0.70      0.63      0.64       108
-    weighted avg       0.70      0.63      0.64       108
+   accuracy                                                 0.63     108
+  macro avg          0.70                0.63               0.64     108
+ weighted avg        0.70                0.63               0.64     108
+
 
 
 ## 8. Error Analysis
@@ -238,7 +262,9 @@ Wrong predictions: 9 / 108
 --- #1 ---
 
 Text:      The article also raises an interesting question. My understanding is the big difference in North American and British color TV is that NTSC was engineered to be backwards compatible with existing blac...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.49)
 
 Reason: Interpreted as technical explanation instead of opinionated interpretation.
@@ -246,7 +272,9 @@ Reason: Interpreted as technical explanation instead of opinionated interpretati
 --- #2 ---
 
 Text:      This article uses so many words to focus on the political reasons, but completely ignores the primary driver: Cost.<p>Korean weapons systems are 40-60% cheaper than their American counterparts.<p>The ...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.58)
 
 Reason: Argument expressed in analytical tone.
@@ -254,7 +282,9 @@ Reason: Argument expressed in analytical tone.
 --- #3 ---
 
 Text:      Parasympathetic nervous activation <i>increased</i> risk-taking behavior? That's interesting/unexpected (at least to me). Also, this part caught my eye:<p>> The selective impact of prolonged exhalatio...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.55)
 
 Reason: Scientific explanation misread as neutral analysis.
@@ -262,7 +292,9 @@ Reason: Scientific explanation misread as neutral analysis.
 --- #4 ---
 
 Text:      > In-game constructions of NAND gates and a perceptron (forward prop and training) as described in in 'If LLMs Have Human-Like Attributes, Then So Does Age of Empires II'.<p>Interesting concept<p>> We...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.90)
 
 Reason:  Technical keywords triggered analysis label.
@@ -270,14 +302,18 @@ Reason:  Technical keywords triggered analysis label.
 --- #5 ---
 
 Text:      > [...] the maker was almost certainly a transcriber who used it to keep his place on the page and note the column he was writing in when he stopped. The wheel would be moved to the stopping point and...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.51)
 
 Reason: Historical explanation interpreted as analysis.
 
 --- #6 ---
 Text:      AMD will reinstate memory encryption on Ryzen 9000 CPUs via BIOS update in July
+
 True:      opinion_reasoned
+
 Predicted: surface_reaction  (confidence: 0.49)
 
 Reason: Model treated as simple news reaction.
@@ -285,7 +321,9 @@ Reason: Model treated as simple news reaction.
 --- #7 ---
 
 Text:      This article uses so many words to focus on the political reasons, but completely ignores the primary driver: Cost.<p>Korean weapons systems are 40-60% cheaper than their American counterparts.<p>The ...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.58)
 
 Reason:contains structured comparison + numerical evidence, which looks like analytical reasoning even though the intent is opinionated critique.
@@ -293,7 +331,9 @@ Reason:contains structured comparison + numerical evidence, which looks like ana
 --- #8 ---
 
 Text:      A dead comment says:<p>> Of course, this assumes independent events. World Cup, super bowls, etc break these assumptions.<p>Yes, this is very true. The model here works for Poisson arrivals and expone...
+
 True:      opinion_reasoned
+
 Predicted: analysis  (confidence: 0.79)
 
 Reason: Mathematical explanation misinterpreted as deep analysis.
@@ -301,7 +341,9 @@ Reason: Mathematical explanation misinterpreted as deep analysis.
 --- #9 ---
 
 Text:      A "one-time" tax to fund recurring health care and educational expenses is an obvious lie.
+
 True:      opinion_reasoned
+
 Predicted: surface_reaction  (confidence: 0.45)
 
 Reason: Model focused on emotional phrasing (“obvious lie”).
@@ -389,7 +431,10 @@ https://hacker-news.firebaseio.com/v0/item/48621153.json
 
 That returns:
 
-{"by":"FinnLobsien","id":48621153,"kids":[48622404,48622298,48621728,48621524,48621382,48622700],"parent":48620462,"text":"If you have a hobby project like writing a blog, crocheting, or almost any other creative hobby, you can dip in and out however it suits you. If you deal with major life events, sicknesses, etc., you can leave the hobby and come back. Nobody is paying you for it, so nobody can complain (maybe the friends who miss you, but it&#x27;s not actively impacting the real world).<p>Open source is one of those weird things where your hobby project can become an essential piece of infrastructure.<p>It&#x27;s like if you loved crocheting, but somehow if you stopped crocheting everyone in your city would no longer have clothes and need to walk around naked.","time":1782065474,"type":"comment"}
+{
+   "by":"FinnLobsien","id":48621153,"kids":[48622404,48622298,48621728,48621524,48621382,48622700],"parent":48620462,"text":"If you have a hobby project like writing a blog, crocheting, or almost any other creative hobby, you can dip in and out however it suits you. If you deal with major life events, sicknesses, etc., you can leave the hobby and come back. Nobody is paying you for it, so nobody can complain (maybe the friends who miss you, but it&#x27;s not actively impacting the real world).<p>Open source is one of those weird things where your hobby project can become an essential piece of infrastructure.<p>It&#x27;s like if you loved crocheting, but somehow if you stopped crocheting everyone in your city would no longer have clothes and need to walk around naked.","time":1782065474,"type":"comment"
+   }
+
 
 Data was collected using the Hacker News public Firebase API. Each text entry corresponds to a real post or comment retrieved using item endpoints from top story IDs.
 
@@ -400,4 +445,4 @@ The fine-tuned model significantly improves structured classification over zero-
 Remaining improvements depend primarily on:
 - Sharpening label boundaries
 - Adding more edge-case training examples
-- Reducing overlap between reasoning and analysis categories# ai201-project3-takemeter_starter
+- Reducing overlap between reasoning and analysis categories
